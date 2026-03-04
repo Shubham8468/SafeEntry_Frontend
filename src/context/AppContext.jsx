@@ -20,7 +20,7 @@ export const AppContextProvider =(props)=>{
     //user auth or not 
     const getAuthState= async()=>{
         try{
-             const {data}= await axios.get(backendUrl +'/api.auth/is-auth')
+             const {data}= await axios.get(backendUrl +'/api/auth/is-auth')
              if(data.Success){
                 setIsLoggedin(true)
                 getUserDate()
