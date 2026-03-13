@@ -6,7 +6,7 @@ export const AppContent =createContext();
 
 export const AppContextProvider =(props)=>{
     axios.defaults.withCredentials = true
-    const backendUrl= import.meta.env.VITE_BACKEND_URL
+    const backendUrl = (import.meta.env.VITE_BACKEND_URL || 'https://safe-entry-backend.vercel.app').replace(/\/$/, '')
     const [isLoggin,setIsLoggedin] = useState(false);
     const [userData,setuserData] = useState(false);
     const getUserDate= async ()=>{
