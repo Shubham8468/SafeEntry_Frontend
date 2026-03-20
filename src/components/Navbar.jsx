@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import {assets} from '../assets/assets.js'
 import {useNavigate} from 'react-router-dom'
 import { AppContent } from '../context/AppContext.jsx';
@@ -10,6 +10,7 @@ const Navbar=()=>{
     // user redirect on the route path 
     // onClick use and send 
     const {userData,backendUrl, setUserData, setIsLoggedin}=useContext(AppContent)
+    const [isVerifyingEmail, setIsVerifyingEmail] = useState(false);
     const logout= async ()=>{
         try{
             axios.defaults.withCredentials=true;
@@ -27,6 +28,8 @@ const Navbar=()=>{
 
     //For the verify
     const sendVerificationPto = async ()=>{
+        if (isVerifyingEmail) return;
+        setIsVerifyingEmail(true);
         try{
             axios.defaults.withCredentials=true; // this are the cookies
             const {data}=await axios.post(backendUrl+'/api/auth/send-verify-otp')
@@ -38,6 +41,8 @@ const Navbar=()=>{
             }
         }catch(err){
             toast.error(err.message);
+        } finally {
+            setIsVerifyingEmail(false);
         }
     }
     return (
@@ -46,8 +51,8 @@ const Navbar=()=>{
             {userData ? <div className='relative group rounded-full bg-blue-400 px-5 py-3 text-white text-xl cursor-pointer'>{userData.name[0].toUpperCase()}
                 <div className='absolute hidden group-hover:block top-0 right-0 z-10 text-black rounded pt-10'>
                     <ul className='list-none m-0 p-2 bg-blue-200 text-sm w-30 h-20 rounded-xl'>
-                        {!userData.isAccountVerified && <li onClick={sendVerificationPto} className='py-1 px-2 hover:bg-white rounded-full coursor-pointer'>
-                            Verify email
+                        {!userData.isAccountVerified && <li onClick={sendVerificationPto} disabled={isVerifyingEmail} className='py-1 px-2 hover:bg-white rounded-full cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed'>
+                            {isVerifyingEmail ? 'Sending OTP...' : 'Verify email'}
                         </li> }
                         
                         <li onClick={logout} className='py-1 px-2 hover:bg-white rounded-full'>
